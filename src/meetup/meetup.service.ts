@@ -7,23 +7,23 @@ import { DatabaseService } from 'src/database/database.service';
 export class MeetupService {
   constructor(private readonly prismaService: DatabaseService) {}
 
-  create(createMeetupDto: CreateMeetupDto) {
+  async create(createMeetupDto: CreateMeetupDto) {
     return 'This action adds a new meetup';
   }
 
-  findAll() {
+  async findAll() {
     return `This action returns all meetup`;
   }
 
-  findOne(id: number) {
+  async findOne(id: number) {
     return `This action returns a #${id} meetup`;
   }
 
-  update(id: number, updateMeetupDto: UpdateMeetupDto) {
+  async update(id: number, updateMeetupDto: UpdateMeetupDto) {
     return `This action updates a #${id} meetup`;
   }
 
-  remove(id: number) {
+  async remove(id: number) {
     return `This action removes a #${id} meetup`;
   }
 }

@@ -7,11 +7,11 @@ import { DatabaseService } from 'src/database/database.service';
 export class AuthService {
   constructor(private readonly prismaService: DatabaseService) {}
 
-  signUp(signUpAuthDto: SignInAuthDto) {
+  async signUp(signUpAuthDto: SignInAuthDto) {
     return null;
   }
 
-  signIn(signInAuthDto: SignUpAuthDto) {
+  async signIn(signInAuthDto: SignUpAuthDto) {
     return null;
   }
 }
