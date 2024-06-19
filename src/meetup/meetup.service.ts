@@ -1,9 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { CreateMeetupDto } from './dto/create-meetup.dto';
 import { UpdateMeetupDto } from './dto/update-meetup.dto';
+import { DatabaseService } from 'src/database/database.service';
 
 @Injectable()
 export class MeetupService {
+  constructor(private readonly prismaService: DatabaseService) {}
+
   create(createMeetupDto: CreateMeetupDto) {
     return 'This action adds a new meetup';
   }

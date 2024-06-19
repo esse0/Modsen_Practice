@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode } from '@nestjs/common';
 import { MeetupService } from './meetup.service';
 import { CreateMeetupDto } from './dto/create-meetup.dto';
 import { UpdateMeetupDto } from './dto/update-meetup.dto';
@@ -7,28 +7,33 @@ import { UpdateMeetupDto } from './dto/update-meetup.dto';
 export class MeetupController {
   constructor(private readonly meetupService: MeetupService) {}
 
+  @HttpCode(201)
   @Post()
-  create(@Body() createMeetupDto: CreateMeetupDto) {
+  async create(@Body() createMeetupDto: CreateMeetupDto) {
     return this.meetupService.create(createMeetupDto);
   }
 
+  @HttpCode(200)
   @Get()
-  findAll() {
+  async findAll() {
     return this.meetupService.findAll();
   }
 
+  @HttpCode(200)
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string) {
     return this.meetupService.findOne(+id);
   }
 
+  @HttpCode(200)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMeetupDto: UpdateMeetupDto) {
+  async update(@Param('id') id: string, @Body() updateMeetupDto: UpdateMeetupDto) {
     return this.meetupService.update(+id, updateMeetupDto);
   }
 
+  @HttpCode(200)
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     return this.meetupService.remove(+id);
   }
 }
