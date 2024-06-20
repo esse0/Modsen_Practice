@@ -18,6 +18,7 @@ model User {
   hashedPassword String @map("hashed_password")
   role Role @default(USER)
   meetups Meetup[]
+  refreshToken String?
 }
 
 model Meetup {
