@@ -5,8 +5,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt'
 import { Request as RequestType } from 'express';
 
 type JwtPayload = {
-    sub: string,
-    login: string,
+    id: string,
     role: string
 }
 
