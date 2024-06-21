@@ -5,11 +5,13 @@ import { SignUpAuthDto } from './dto/signup-auth.dto';
 import { GetCurrentUser } from 'src/common/decorators';
 import { RtGuard } from 'src/common/guards';
 import { Request, Response } from 'express';
+import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-
+  
   @HttpCode(200)
   @Post('signin')
   async signIn(@Body() signInDto: SignInAuthDto, @Res({ passthrough: true }) response: Response) {
@@ -31,6 +33,7 @@ export class AuthController {
     return this.authService.signUp(signUpDto);
   }
 
+  @ApiSecurity('refresh-token')
   @UseGuards(RtGuard)
   @HttpCode(200)
   @Post('refresh')

@@ -6,11 +6,14 @@ import { GetCurrentUser } from 'src/common/decorators';
 import { AtGuard } from 'src/common/guards';
 import { Roles } from 'src/common/decorators/RoleDecorator';
 import { RoleGuard } from 'src/common/guards/role.guard';
+import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 
-@Controller('meetup')
+@ApiTags('meetups')
+@Controller('meetups')
 export class MeetupController {
   constructor(private readonly meetupService: MeetupService) {}
-
+  
+  @ApiSecurity('access-token')
   @UseGuards(AtGuard, RoleGuard)
   @Roles("ADMIN")
   @HttpCode(201)
@@ -19,6 +22,7 @@ export class MeetupController {
     return this.meetupService.create(createMeetupDto, userId);
   }
 
+  @ApiSecurity('access-token')
   @UseGuards(AtGuard)
   @HttpCode(200)
   @Get('getall')
@@ -26,6 +30,7 @@ export class MeetupController {
     return this.meetupService.findAll();
   }
 
+  @ApiSecurity('access-token')
   @UseGuards(AtGuard)
   @HttpCode(200)
   @Get(':id')
@@ -33,6 +38,7 @@ export class MeetupController {
     return this.meetupService.findOne(id);
   }
 
+  @ApiSecurity('access-token')
   @UseGuards(AtGuard, RoleGuard)
   @Roles("ADMIN")
   @HttpCode(200)
@@ -41,6 +47,7 @@ export class MeetupController {
     return this.meetupService.update(id, userId, updateMeetupDto);
   }
 
+  @ApiSecurity('access-token')
   @UseGuards(AtGuard, RoleGuard)
   @Roles("ADMIN")
   @HttpCode(200)
