@@ -35,7 +35,7 @@ export class AuthService {
 
     await this.updateRtHash(user.id, tokens.refresh_token);
 
-    return {"tokens": tokens, "user": user };
+    return tokens;
   }
 
   async signUp(signUpAuthDto: SignUpAuthDto) {
