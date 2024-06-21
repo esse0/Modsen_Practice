@@ -3,24 +3,24 @@ import { IsNotEmpty, IsString, IsArray, ArrayMinSize, IsDateString, NotContains 
 export class CreateMeetupDto {
     @IsNotEmpty()
     @IsString()
-    topic: string;
+    readonly topic: string;
 
     @IsNotEmpty()
     @IsString()
-    description: string;
+    readonly description: string;
 
     @IsNotEmpty()
     @IsArray()
     @IsString({ each: true })
     @NotContains(" ", {each: true})
     @ArrayMinSize(0)
-    tags: string[];
+    readonly tags: string[];
 
     @IsNotEmpty()
     @IsDateString()
-    eventDateTime: Date;
+    readonly eventDateTime: Date;
 
     @IsNotEmpty()
     @IsString()
-    address: string;
+    readonly address: string;
 }
