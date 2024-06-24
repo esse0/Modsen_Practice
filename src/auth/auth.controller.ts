@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { Controller, Post, Body,  HttpCode, UseGuards, Req, Res } from '@nestjs/common';
-import { ApiBadRequestResponse, ApiCreatedResponse, ApiForbiddenResponse, ApiInternalServerErrorResponse, ApiResponse, ApiSecurity, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiCreatedResponse, ApiForbiddenResponse, ApiInternalServerErrorResponse, ApiResponse, ApiSecurity, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { GetCurrentUser } from 'src/common/decorators';
 import { RtGuard } from 'src/common/guards';
@@ -79,6 +79,7 @@ export class AuthController {
   })
   @ApiForbiddenResponse({ description: 'Access denied', type: CustomResponseDto })
   @ApiInternalServerErrorResponse({ description: 'Internal server error', type: CustomResponseDto })
+  @ApiUnauthorizedResponse({ description: 'Unathorized', type: CustomResponseDto })
   @ApiSecurity('refresh-token')
   @UseGuards(RtGuard)
   @HttpCode(200)
