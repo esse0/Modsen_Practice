@@ -2,6 +2,10 @@ import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/com
 import { CreateMeetupDto } from './dto/create-meetup.dto';
 import { UpdateMeetupDto } from './dto/update-meetup.dto';
 import { DatabaseService } from 'src/database/database.service';
+import { PageOptionsDto } from './dto/page-options.dto';
+import { PageDto } from './dto/page.dto';
+import { MeetupDto } from './dto/meetup.dto';
+import { PageMetaDto } from './dto/page-meta.dto';
 
 @Injectable()
 export class MeetupService {
@@ -39,12 +43,31 @@ export class MeetupService {
     }});
   }
 
-  async findAll() {
-    return this.prismaService.meetup.findMany();
+  async findAll(pageOptionsDto: PageOptionsDto): Promise<PageDto<MeetupDto>> {
+
+    let meetups = await this.prismaService.meetup.findMany({
+      where:{
+        topic: pageOptionsDto.searchByTopic
+      },
+      orderBy: {
+        topic: pageOptionsDto.order,
+      }, 
+      skip: pageOptionsDto.skip,
+      take: pageOptionsDto.take,
+      include:{
+        tags: true
+      }
+    });
+    
+    const itemCount = meetups.length;
+
+    const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto });
+    
+    return new PageDto(meetups, pageMetaDto);
   }
 
   async findOne(id: number) {
-    let meetup = await this.prismaService.meetup.findUnique({where:{ id: id}});
+    let meetup = await this.prismaService.meetup.findUnique({where:{ id: id}, include:{tags: true}});
 
     if(!meetup) throw new BadRequestException("Meetup not found");
 

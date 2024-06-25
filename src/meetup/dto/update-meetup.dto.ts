@@ -7,12 +7,14 @@ export class UpdateMeetupDto {
     @IsOptional()
     @IsNotEmpty()
     @IsString()
-    readonly topic: string;
+    @IsOptional()
+    readonly topic?: string;
 
     @ApiPropertyOptional()
     @IsNotEmpty()
     @IsString()
-    readonly description: string;
+    @IsOptional()
+    readonly description?: string;
 
     @ApiPropertyOptional()
     @IsNotEmpty()
@@ -20,15 +22,18 @@ export class UpdateMeetupDto {
     @IsString({ each: true })
     @NotContains(" ", {each: true})
     @ArrayMinSize(0)
-    readonly tags: string[];
+    @IsOptional()
+    readonly tags?: string[];
 
     @ApiPropertyOptional()
     @IsNotEmpty()
     @IsDateString()
-    readonly eventDateTime: Date;
+    @IsOptional()
+    readonly eventDateTime?: Date;
 
     @ApiPropertyOptional()
     @IsNotEmpty()
     @IsString()
-    readonly address: string;
+    @IsOptional()
+    readonly address?: string;
 }
