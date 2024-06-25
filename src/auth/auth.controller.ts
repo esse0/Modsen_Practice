@@ -7,14 +7,12 @@ import { RtGuard } from 'src/common/guards';
 import { SignInAuthDto } from './dto/signin-auth.dto';
 import { SignUpAuthDto } from './dto/signup-auth.dto';
 import { CustomResponseDto } from 'src/common/dto/custom-response.dto';
-import { UserResponseDto } from './dto/user-response.dto';
 
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-  
   
   @ApiResponse({
     status: 200,
@@ -56,7 +54,7 @@ export class AuthController {
   @ApiInternalServerErrorResponse({ description: 'Internal server error', type: CustomResponseDto })
   @HttpCode(201)
   @Post('signup')
-  async signUp(@Body() signUpDto: SignUpAuthDto): Promise<UserResponseDto> {
+  async signUp(@Body() signUpDto: SignUpAuthDto) {
     return this.authService.signUp(signUpDto);
   }
 

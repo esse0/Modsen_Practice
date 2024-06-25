@@ -55,7 +55,7 @@ export class AuthService {
             email: email,
             hashedPassword: hashedPassword,
             role: Role[role]
-        }});
+        }, select:{ email: true, role: true}});
 
     return createdUser;
   }
