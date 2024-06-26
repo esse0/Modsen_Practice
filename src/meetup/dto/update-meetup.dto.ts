@@ -8,13 +8,13 @@ export class UpdateMeetupDto {
     @IsNotEmpty()
     @IsString()
     @IsOptional()
-    readonly topic?: string;
+    readonly topic?: string = undefined;
 
     @ApiPropertyOptional()
     @IsNotEmpty()
     @IsString()
     @IsOptional()
-    readonly description?: string;
+    readonly description?: string = undefined;
 
     @ApiPropertyOptional()
     @IsNotEmpty()
@@ -23,17 +23,17 @@ export class UpdateMeetupDto {
     @NotContains(" ", {each: true})
     @ArrayMinSize(0)
     @IsOptional()
-    readonly tags?: string[];
+    readonly tags?: string[] = undefined;
 
     @ApiPropertyOptional()
     @IsNotEmpty()
     @IsDateString()
     @IsOptional()
-    readonly eventDateTime?: Date;
+    readonly eventDateTime?: Date = undefined;
 
     @ApiPropertyOptional()
     @IsNotEmpty()
     @IsString()
     @IsOptional()
-    readonly address?: string;
+    readonly address?: string = undefined;
 }

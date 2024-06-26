@@ -91,7 +91,7 @@ export class MeetupService {
       topic,
       description,
       tags: {
-        connectOrCreate: tags.map(tagName => {
+        connectOrCreate: tags?.map(tagName => {
           return {
             where:{
               name: tagName
@@ -104,7 +104,7 @@ export class MeetupService {
       },
       eventDateTime,
       address
-    }});
+    }, include:{tags:true}});
   }
 
   async remove(id: number, userId: number) {
