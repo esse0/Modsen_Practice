@@ -21,7 +21,7 @@ export class CustomResponseInterceptor implements NestInterceptor {
               const statusCode = err instanceof HttpException ? err.getStatus() : 500;
               const errorResponse = {
               statusCode,
-              message: err.response.message || err.message || 'Internal server error',
+              message: err?.response?.message || err?.message || 'Internal server error',
               error: err.name || 'Error',
               path: request.url,
               data: {},
