@@ -120,4 +120,50 @@ export class MeetupService {
 
     return this.prismaService.meetup.delete({where:{id}, include: {tags: true}});
   }
+
+  async registerUser(id: number, userId: number){
+    let user = await this.prismaService.user.findUnique({where:{id: userId}, include: {subscribedMeetups: {where:{id: id}}}});
+
+    if(!user) throw new ForbiddenException("User not found");
+
+    if(user.subscribedMeetups.length != 0) throw new BadRequestException("You are already registered for the meetup");
+
+    let meetup = await this.prismaService.meetup.findUnique({where:{ id: id}});
+
+    if(!meetup) throw new BadRequestException("Meetup not found");
+
+    if(meetup.organizerId == userId) throw new BadRequestException("Owner cannot register for the meetup");
+
+    return this.prismaService.meetup.update({where: {id}, data:{
+      subscribers:{
+        connect:{
+          id: userId
+        }
+      }
+    }, include:{tags:true, subscribers: {
+        select:{
+          email: true
+        }
+    }}});
+  }
+
+  async unregisterUser(id: number, userId: number){
+    let user = await this.prismaService.user.findUnique({where:{id: userId}, include: {subscribedMeetups: {where:{id: id}}}});
+
+    if(!user) throw new ForbiddenException("User not found");
+
+    if(user.subscribedMeetups.length == 0) throw new BadRequestException("You are not registered for this meetup");
+
+    return this.prismaService.meetup.update({where: {id}, data:{
+      subscribers:{
+        disconnect:{
+          id: userId
+        }
+      }
+    }, include:{tags: true, subscribers:{
+      select:{
+        email: true
+      }
+    }}});
+  }
 }

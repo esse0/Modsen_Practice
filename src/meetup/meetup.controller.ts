@@ -57,4 +57,20 @@ export class MeetupController {
   async remove(@GetCurrentUser('id') userId: number, @Param('id', ParseIntPipe) id: number) {
     return this.meetupService.remove(id, userId);
   }
+
+  @ApiSecurity('access-token')
+  @Roles("ADMIN", "USER")
+  @HttpCode(200)
+  @Post(':id/register')
+  async registerUser(@GetCurrentUser('id') userId: number, @Param('id', ParseIntPipe) id: number) {
+    return this.meetupService.registerUser(id, userId);
+  }
+
+  @ApiSecurity('access-token')
+  @Roles("ADMIN", "USER")
+  @HttpCode(200)
+  @Post(':id/unregister')
+  async unregisterUser(@GetCurrentUser('id') userId: number, @Param('id', ParseIntPipe) id: number) {
+    return this.meetupService.unregisterUser(id, userId);
+  }
 }
