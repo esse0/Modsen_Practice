@@ -40,7 +40,7 @@ export class MeetupService {
           id: user.id
         }
       }
-    }});
+    }, include:{tags: true}});
   }
 
   async findAll(pageOptionsDto: PageOptionsDto): Promise<PageDto<MeetupDto>> {
@@ -118,6 +118,6 @@ export class MeetupService {
 
     if(meetup.organizerId != user.id) throw new ForbiddenException("Access denied");
 
-    return this.prismaService.meetup.delete({where:{id}});
+    return this.prismaService.meetup.delete({where:{id}, include: {tags: true}});
   }
 }
