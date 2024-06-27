@@ -6,7 +6,9 @@ import { JwtModule } from '@nestjs/jwt';
 import { AtStrategy, RtStrategy } from './strategies';
 
 @Module({
-  imports: [JwtModule.register({}), ConfigModule.forRoot()],
+  imports: [JwtModule.register({}), ConfigModule.forRoot({
+    envFilePath: ['.env.development.local', '.env.development'],
+  })],
   controllers: [AuthController],
   providers: [AuthService, AtStrategy, RtStrategy],
 })
