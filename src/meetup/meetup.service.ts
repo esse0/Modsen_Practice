@@ -45,9 +45,19 @@ export class MeetupService {
 
   async findAll(pageOptionsDto: PageOptionsDto): Promise<PageDto<MeetupDto>> {
 
-    let meetups = await this.prismaService.meetup.findMany({
+    let meetupsCount = (await this.prismaService.meetup.findMany({
       where:{
-        topic: pageOptionsDto.searchByTopic
+        topic: {
+          contains: pageOptionsDto.searchByTopic
+        }
+      }
+    })).length;
+
+    let paginatedMeetups = await this.prismaService.meetup.findMany({
+      where:{
+        topic: {
+          contains: pageOptionsDto.searchByTopic
+        }
       },
       orderBy: {
         topic: pageOptionsDto.order,
@@ -59,11 +69,11 @@ export class MeetupService {
       }
     });
     
-    const itemCount = meetups.length;
+    const itemCount = meetupsCount;
 
     const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto });
     
-    return new PageDto(meetups, pageMetaDto);
+    return new PageDto(paginatedMeetups, pageMetaDto);
   }
 
   async findOne(id: number) {
