@@ -49,7 +49,14 @@ export class MeetupService {
       where:{
         topic: {
           contains: pageOptionsDto.searchByTopic
-        }
+        },
+        AND: pageOptionsDto.searchByTags.map(tag => ({
+          tags: {
+            every: {
+              name: tag
+            }
+          }
+        })),
       }
     })).length;
 
@@ -57,11 +64,18 @@ export class MeetupService {
       where:{
         topic: {
           contains: pageOptionsDto.searchByTopic
-        }
+        },
+        AND: pageOptionsDto.searchByTags.map(tag => ({
+          tags: {
+            every: {
+              name: tag
+            }
+          }
+        })),
       },
       orderBy: {
         topic: pageOptionsDto.order,
-      }, 
+      },
       skip: pageOptionsDto.skip,
       take: pageOptionsDto.take,
       include:{
