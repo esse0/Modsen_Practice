@@ -1,6 +1,6 @@
 import { ApiPropertyOptional } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { ArrayMinSize, IsArray, IsEnum, IsInt, IsOptional, IsString, Max, MaxLength, Min } from "class-validator";
+import { IsArray, IsEnum, IsInt, IsOptional, IsString, Max, MaxLength, Min } from "class-validator";
 import { Order } from "../constants/Order.enum";
 
 
@@ -48,7 +48,6 @@ export class PageOptionsDto {
   @IsArray()
   @IsString({each: true})
   @IsOptional()
-  @ArrayMinSize(1)
   readonly searchByTags?: string[] = [];
 
   get skip(): number {

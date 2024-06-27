@@ -52,7 +52,7 @@ export class MeetupService {
         },
         AND: pageOptionsDto.searchByTags.map(tag => ({
           tags: {
-            every: {
+            some: {
               name: tag
             }
           }
@@ -67,7 +67,7 @@ export class MeetupService {
         },
         AND: pageOptionsDto.searchByTags.map(tag => ({
           tags: {
-            every: {
+            some: {
               name: tag
             }
           }
