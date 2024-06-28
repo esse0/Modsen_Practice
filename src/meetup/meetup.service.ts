@@ -79,7 +79,12 @@ export class MeetupService {
       skip: pageOptionsDto.skip,
       take: pageOptionsDto.take,
       include:{
-        tags: true
+        tags: true,
+        subscribers: {
+          select: {
+            email: true
+          }
+        }
       }
     });
     
@@ -91,7 +96,11 @@ export class MeetupService {
   }
 
   async findOne(id: number) {
-    let meetup = await this.prismaService.meetup.findUnique({where:{ id: id}, include:{tags: true}});
+    let meetup = await this.prismaService.meetup.findUnique({where:{ id: id}, include:{tags: true, subscribers: {
+      select: {
+        email: true
+      }
+    }}});
 
     if(!meetup) throw new BadRequestException("Meetup not found");
 
@@ -128,7 +137,13 @@ export class MeetupService {
       },
       eventDateTime,
       address
-    }, include:{tags:true}});
+    }, include:{
+      tags:true,
+      subscribers: {
+      select: {
+        email: true
+      }
+    }}});
   }
 
   async remove(id: number, userId: number) {
@@ -142,7 +157,16 @@ export class MeetupService {
 
     if(meetup.organizerId != user.id) throw new ForbiddenException("Access denied");
 
-    return this.prismaService.meetup.delete({where:{id}, include: {tags: true}});
+    return this.prismaService.meetup.delete({where:{id}, 
+      include: {
+        tags: true, 
+        subscribers: {
+          select: {
+              email: true
+          }
+        }
+      }
+    });
   }
 
   async registerUser(id: number, userId: number){
@@ -184,10 +208,13 @@ export class MeetupService {
           id: userId
         }
       }
-    }, include:{tags: true, subscribers:{
-      select:{
-        email: true
+    }, include:{
+      tags: true, 
+      subscribers:{
+        select:{
+          email: true
+        }
       }
-    }}});
+    }});
   }
 }
