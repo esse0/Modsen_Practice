@@ -68,7 +68,6 @@ export class AuthService {
     });
     
     if(!user || user.refreshToken == null) throw new ForbiddenException('Access denied');
-    //await bcrypt.compare(rt, user.hashedRefreshToken)
     const rtMatches = rt === user.refreshToken;
 
     if(!rtMatches) throw new ForbiddenException('Access denied');
@@ -89,8 +88,6 @@ export class AuthService {
   }
 
   async updateRtHash(userId: number, rt: string){
-    //const hash = await this.getHash(rt);
-    
     await this.prismaService.user.update({
         where: {
           id: userId
@@ -102,7 +99,6 @@ export class AuthService {
   }
   
   async getTokens(userId: number, role: string): Promise<Tokens>{
-        
     const [at, rt] = await Promise.all([
         this.jwtService.signAsync(
             {
