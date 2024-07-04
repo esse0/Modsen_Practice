@@ -81,7 +81,7 @@ export class AuthService {
   }
 
   async getHash(data: string){
-    const saltOrRounds = 10;
+    const saltOrRounds = this.configService.get('SaltOrRounds');
    
     const hashedData = await bcrypt.hash(data, saltOrRounds);
 
