@@ -30,7 +30,7 @@ export class MeetupController {
   @Roles("ADMIN", "USER")
   @HttpCode(200)
   @Get()
-  async findAll(@Query() pageOptionsDto: PageOptionsDto) : Promise<PageDto<MeetupDto>> {
+  async findAll(@Query() pageOptionsDto: PageOptionsDto) {
     return this.meetupService.findAll(pageOptionsDto);
   }
 

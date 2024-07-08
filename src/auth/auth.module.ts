@@ -10,6 +10,7 @@ import { AtStrategy, RtStrategy } from './strategies';
     envFilePath: ['.env.development.local', '.env.development'],
   })],
   controllers: [AuthController],
-  providers: [AuthService, AtStrategy, RtStrategy],
+  providers: [AuthService, AtStrategy, RtStrategy]
 })
+
 export class AuthModule {}

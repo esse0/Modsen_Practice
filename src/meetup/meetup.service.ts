@@ -43,7 +43,7 @@ export class MeetupService {
     }, include:{tags: true}});
   }
 
-  async findAll(pageOptionsDto: PageOptionsDto): Promise<PageDto<MeetupDto>> {
+  async findAll(pageOptionsDto: PageOptionsDto) {
 
     let meetupsCount = (await this.prismaService.meetup.findMany({
       where:{
@@ -96,11 +96,17 @@ export class MeetupService {
   }
 
   async findOne(id: number) {
-    let meetup = await this.prismaService.meetup.findUnique({where:{ id: id}, include:{tags: true, subscribers: {
-      select: {
-        email: true
+    let meetup = await this.prismaService.meetup.findUnique({
+      where:{id}, 
+      include:{
+        tags: true, 
+        subscribers: {
+          select: {
+            email: true
+          }
+        }
       }
-    }}});
+    });
 
     if(!meetup) throw new BadRequestException("Meetup not found");
 
@@ -114,36 +120,41 @@ export class MeetupService {
 
     if(!user) throw new ForbiddenException("User not found");
 
-    let meetup = await this.prismaService.meetup.findUnique({where:{ id: id}});
+    let meetup = await this.prismaService.meetup.findUnique({where:{id}});
 
     if(!meetup) throw new BadRequestException("Meetup not found");
 
     if(meetup.organizerId != user.id) throw new ForbiddenException("Access denied");
 
-    return this.prismaService.meetup.update({where: {id}, data:{
-      topic,
-      description,
-      tags: {
-        connectOrCreate: tags?.map(tagName => {
-          return {
-            where:{
-              name: tagName
-            },
-            create:{
-              name: tagName
+    return this.prismaService.meetup.update({
+      where: {id}, 
+      data:{
+        topic,
+        description,
+        tags: {
+          connectOrCreate: tags?.map(tagName => {
+            return {
+              where:{
+                name: tagName
+              },
+              create:{
+                name: tagName
+              }
             }
+          })
+        },
+        eventDateTime,
+        address
+      }, 
+      include:{
+        tags: true,
+        subscribers: {
+          select: {
+            email: true
           }
-        })
-      },
-      eventDateTime,
-      address
-    }, include:{
-      tags:true,
-      subscribers: {
-      select: {
-        email: true
+        }
       }
-    }}});
+    });
   }
 
   async remove(id: number, userId: number) {
@@ -157,12 +168,13 @@ export class MeetupService {
 
     if(meetup.organizerId != user.id) throw new ForbiddenException("Access denied");
 
-    return this.prismaService.meetup.delete({where:{id}, 
+    return this.prismaService.meetup.delete({
+      where:{id}, 
       include: {
         tags: true, 
         subscribers: {
           select: {
-              email: true
+            email: true
           }
         }
       }
@@ -170,29 +182,36 @@ export class MeetupService {
   }
 
   async registerUser(id: number, userId: number){
-    let user = await this.prismaService.user.findUnique({where:{id: userId}, include: {subscribedMeetups: {where:{id: id}}}});
+    let user = await this.prismaService.user.findUnique({where:{id: userId}, include: {subscribedMeetups: {where:{id}}}});
 
     if(!user) throw new ForbiddenException("User not found");
 
     if(user.subscribedMeetups.length != 0) throw new BadRequestException("You are already registered for the meetup");
 
-    let meetup = await this.prismaService.meetup.findUnique({where:{ id: id}});
+    let meetup = await this.prismaService.meetup.findUnique({where:{id}});
 
     if(!meetup) throw new BadRequestException("Meetup not found");
 
     if(meetup.organizerId == userId) throw new BadRequestException("Owner cannot register for the meetup");
 
-    return this.prismaService.meetup.update({where: {id}, data:{
-      subscribers:{
-        connect:{
-          id: userId
+    return this.prismaService.meetup.update({
+      where: {id}, 
+      data:{
+        subscribers:{
+          connect:{
+            id: userId
+          }
+        }
+      }, 
+      include:{
+        tags: true,
+        subscribers: {
+          select:{
+            email: true
+          }
         }
       }
-    }, include:{tags:true, subscribers: {
-        select:{
-          email: true
-        }
-    }}});
+    });
   }
 
   async unregisterUser(id: number, userId: number){
