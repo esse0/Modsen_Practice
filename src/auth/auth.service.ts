@@ -63,7 +63,7 @@ export class AuthService {
     return createdUser;
   }
 
-  async refreshTokens(userId: number, refreshToken: string){
+  async refreshTokens(userId: string, refreshToken: string){
     const user = await this.prismaService.user.findUnique({
       where: {
         id: userId
@@ -83,7 +83,7 @@ export class AuthService {
     return tokens;
   }
 
-  async updateRtHash(userId: number, refreshToken: string){
+  async updateRtHash(userId: string, refreshToken: string){
     await this.prismaService.user.update({
       where: {
         id: userId
@@ -94,7 +94,7 @@ export class AuthService {
     })
   }
   
-  async getTokens(userId: number, role: string): Promise<Tokens>{
+  async getTokens(userId: string, role: string): Promise<Tokens>{
     const [at, rt] = await Promise.all([
       this.jwtService.signAsync(
         {

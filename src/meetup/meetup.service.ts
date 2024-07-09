@@ -11,7 +11,7 @@ import { PageMetaDto } from './dto/page-meta.dto';
 export class MeetupService {
   constructor(private readonly prismaService: DatabaseService) {}
 
-  async create(createMeetupDto: CreateMeetupDto, userId: number) {
+  async create(createMeetupDto: CreateMeetupDto, userId: string) {
     const {topic, description, tags, eventDateTime, address} = createMeetupDto;
 
     let user = await this.prismaService.user.findUnique({where:{id: userId}});
@@ -95,7 +95,7 @@ export class MeetupService {
     return new PageDto(paginatedMeetups, pageMetaDto);
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     let meetup = await this.prismaService.meetup.findUnique({
       where:{id}, 
       include:{
@@ -113,7 +113,7 @@ export class MeetupService {
     return meetup;
   }
 
-  async update(id: number, userId: number, updateMeetupDto: UpdateMeetupDto) {
+  async update(id: string, userId: string, updateMeetupDto: UpdateMeetupDto) {
     const {topic, description, tags, eventDateTime, address} = updateMeetupDto;
 
     let user = await this.prismaService.user.findUnique({where:{id: userId}});
@@ -157,7 +157,7 @@ export class MeetupService {
     });
   }
 
-  async remove(id: number, userId: number) {
+  async remove(id: string, userId: string) {
     let user = await this.prismaService.user.findUnique({where:{id: userId}});
 
     if(!user) throw new ForbiddenException("User not found");
@@ -181,7 +181,7 @@ export class MeetupService {
     });
   }
 
-  async registerUser(id: number, userId: number){
+  async registerUser(id: string, userId: string){
     let user = await this.prismaService.user.findUnique({where:{id: userId}, include: {subscribedMeetups: {where:{id}}}});
 
     if(!user) throw new ForbiddenException("User not found");
@@ -214,7 +214,7 @@ export class MeetupService {
     });
   }
 
-  async unregisterUser(id: number, userId: number){
+  async unregisterUser(id: string, userId: string){
     let user = await this.prismaService.user.findUnique({where:{id: userId}, include: {subscribedMeetups: {where:{id: id}}}});
 
     if(!user) throw new ForbiddenException("User not found");
