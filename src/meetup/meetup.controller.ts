@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, UseGuards, ParseIntPipe, Query, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, UseGuards, Query, ParseUUIDPipe } from '@nestjs/common';
 import { MeetupService } from './meetup.service';
 import { CreateMeetupDto } from './dto/create-meetup.dto';
 import { UpdateMeetupDto } from './dto/update-meetup.dto';

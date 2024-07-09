@@ -4,7 +4,6 @@ import { UpdateMeetupDto } from './dto/update-meetup.dto';
 import { DatabaseService } from 'src/database/database.service';
 import { PageOptionsDto } from './dto/page-options.dto';
 import { PageDto } from './dto/page.dto';
-import { MeetupDto } from './dto/meetup.dto';
 import { PageMetaDto } from './dto/page-meta.dto';
 
 @Injectable()
@@ -18,41 +17,50 @@ export class MeetupService {
 
     if(!user) throw new ForbiddenException("User not found");
 
-    return this.prismaService.meetup.create({data:{
-      topic,
-      description,
-      eventDateTime,
-      address,
-      tags: {
-        connectOrCreate: tags.map(tagName => {
-          return {
-            where:{
-              name: tagName
-            },
-            create:{
-              name: tagName
+    return this.prismaService.meetup.create({
+      data:{
+        topic,
+        description,
+        eventDateTime,
+        address,
+        tags: {
+          connectOrCreate: tags.map(tagName => {
+            return {
+              where:{
+                name: tagName
+              },
+              create:{
+                name: tagName
+              }
             }
+          })
+        },
+        organizer:{
+          connect:{
+            id: user.id
           }
-        })
-      },
-      organizer: {
-        connect:{
-          id: user.id
         }
+      }, 
+      include:{
+        tags:{
+          select:{
+            name:true
+          }
+        }  
       }
-    }, include:{tags: {select:{name:true}}}});
+    });
   }
 
   async findAll(pageOptionsDto: PageOptionsDto) {
 
     let meetupsCount = (await this.prismaService.meetup.findMany({
       where:{
-        topic: {
+        topic:{
           contains: pageOptionsDto.searchByTopic
         },
         AND: pageOptionsDto.searchByTags.map(tag => ({
-          tags: {
-            some: {
+          tags:{
+            some:{
               name: tag
             }
           }
@@ -62,26 +70,30 @@ export class MeetupService {
 
     let paginatedMeetups = await this.prismaService.meetup.findMany({
       where:{
-        topic: {
+        topic:{
           contains: pageOptionsDto.searchByTopic
         },
         AND: pageOptionsDto.searchByTags.map(tag => ({
-          tags: {
-            some: {
+          tags:{
+            some:{
               name: tag
             }
           }
         })),
       },
-      orderBy: {
+      orderBy:{
         topic: pageOptionsDto.order,
       },
       skip: pageOptionsDto.skip,
       take: pageOptionsDto.take,
       include:{
-        tags: {select:{name:true}},
-        subscribers: {
-          select: {
+        tags:{
+          select:{
+            name:true
+          }
+        },
+        subscribers:{
+          select:{
             email: true
           }
         }
@@ -99,9 +111,13 @@ export class MeetupService {
     let meetup = await this.prismaService.meetup.findUnique({
       where:{id}, 
       include:{
-        tags: {select: {name: true}}, 
-        subscribers: {
-          select: {
+        tags:{
+          select:{
+            name: true
+          }
+        }, 
+        subscribers:{
+          select:{
             email: true
           }
         }
@@ -132,6 +148,7 @@ export class MeetupService {
         topic,
         description,
         tags: {
+          set: [],
           connectOrCreate: tags?.map(tagName => {
             return {
               where:{
@@ -147,9 +164,13 @@ export class MeetupService {
         address
       }, 
       include:{
-        tags: {select: {name: true}},
-        subscribers: {
-          select: {
+        tags:{
+          select:{
+            name: true
+          }
+        },
+        subscribers:{
+          select:{
             email: true
           }
         }
@@ -170,10 +191,14 @@ export class MeetupService {
 
     return this.prismaService.meetup.delete({
       where:{id}, 
-      include: {
-        tags: {select: {name:true}}, 
-        subscribers: {
-          select: {
+      include:{
+        tags:{
+          select:{
+            name:true
+          }
+        }, 
+        subscribers:{
+          select:{
             email: true
           }
         }
@@ -221,19 +246,27 @@ export class MeetupService {
 
     if(user.subscribedMeetups.length == 0) throw new BadRequestException("You are not registered for this meetup");
 
-    return this.prismaService.meetup.update({where: {id}, data:{
-      subscribers:{
-        disconnect:{
-          id: userId
+    return this.prismaService.meetup.update({
+      where:{id}, 
+      data:{
+        subscribers:{
+          disconnect:{
+            id: userId
+          }
+        }
+      }, 
+      include:{
+        tags: {
+          select:{
+            name: true
+          }
+        }, 
+        subscribers:{
+          select:{
+            email: true
+          }
         }
       }
-    }, include:{
-      tags: {select: {name: true}}, 
-      subscribers:{
-        select:{
-          email: true
-        }
-      }
-    }});
+    });
   }
 }
