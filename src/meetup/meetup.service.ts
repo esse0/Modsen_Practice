@@ -42,11 +42,7 @@ export class MeetupService {
         }
       }, 
       include:{
-        tags:{
-          select:{
-            name:true
-          }
-        }  
+        tags: true
       }
     });
   }
@@ -87,11 +83,7 @@ export class MeetupService {
       skip: pageOptionsDto.skip,
       take: pageOptionsDto.take,
       include:{
-        tags:{
-          select:{
-            name:true
-          }
-        },
+        tags: true,
         subscribers:{
           select:{
             email: true
@@ -111,11 +103,7 @@ export class MeetupService {
     let meetup = await this.prismaService.meetup.findUnique({
       where:{id}, 
       include:{
-        tags:{
-          select:{
-            name: true
-          }
-        }, 
+        tags: true, 
         subscribers:{
           select:{
             email: true
@@ -164,11 +152,7 @@ export class MeetupService {
         address
       }, 
       include:{
-        tags:{
-          select:{
-            name: true
-          }
-        },
+        tags: true,
         subscribers:{
           select:{
             email: true
@@ -192,11 +176,7 @@ export class MeetupService {
     return this.prismaService.meetup.delete({
       where:{id}, 
       include:{
-        tags:{
-          select:{
-            name:true
-          }
-        }, 
+        tags: true, 
         subscribers:{
           select:{
             email: true
@@ -229,7 +209,7 @@ export class MeetupService {
         }
       }, 
       include:{
-        tags: {select: {name: true}},
+        tags: true,
         subscribers: {
           select:{
             email: true
@@ -256,11 +236,7 @@ export class MeetupService {
         }
       }, 
       include:{
-        tags: {
-          select:{
-            name: true
-          }
-        }, 
+        tags: true, 
         subscribers:{
           select:{
             email: true
