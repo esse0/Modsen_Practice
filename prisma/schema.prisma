@@ -13,7 +13,7 @@ enum Role {
 }
 
 model User {
-  id Int @default(autoincrement()) @id
+  id String @default(uuid()) @id
   email String @unique
   hashedPassword String @map("hashed_password")
   role Role @default(USER)
@@ -23,19 +23,19 @@ model User {
 }
 
 model Meetup {
-  id Int @default(autoincrement()) @id
+  id String @default(uuid()) @id
   topic String
   description String
   tags Tag[]
   eventDateTime DateTime @map("event_date_time")
   address String
   subscribers User[] @relation("UserOnMeetups")
-  organizerId  Int @map("organizer_id")
-  organizer User @relation(fields: [organizerId], references: [id])
+  organizerId  String @map("organizer_uid")
+  organizer User @relation(fields: [organizerId], references: [id], onDelete: Cascade)
 }
 
 model Tag{
-  id Int @default(autoincrement()) @id
+  id String @default(uuid()) @id
   name String @unique
   meetups Meetup[]
 }
