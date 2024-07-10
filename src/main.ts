@@ -11,25 +11,25 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.setGlobalPrefix('api');
-  app.useGlobalPipes(new ValidationPipe({transform: true, whitelist: true}));
+  app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
   app.useGlobalInterceptors(new CustomResponseInterceptor());
   app.use(cookieParser());
 
   const config = new DocumentBuilder()
-  .setTitle('Simple meetups CRUD')
-  .setDescription('The meetups API description')
-  .setVersion('1.0')
-  .addSecurity('access-token', {
-    type: 'apiKey', 
-    in: 'cookie', 
-    name: 'access-token',
-  })
-  .addSecurity('refresh-token', {
-    type: 'apiKey', 
-    in: 'cookie', 
-    name: 'refresh-token',
-  })
-  .build();
+    .setTitle('Simple meetups CRUD')
+    .setDescription('The meetups API description')
+    .setVersion('1.0')
+    .addSecurity('access-token', {
+      type: 'apiKey',
+      in: 'cookie',
+      name: 'access-token',
+    })
+    .addSecurity('refresh-token', {
+      type: 'apiKey',
+      in: 'cookie',
+      name: 'refresh-token',
+    })
+    .build();
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, document);

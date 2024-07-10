@@ -1,4 +1,8 @@
-import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { CreateMeetupDto } from './dto/create-meetup.dto';
 import { UpdateMeetupDto } from './dto/update-meetup.dto';
 import { DatabaseService } from 'src/database/database.service';
@@ -11,238 +15,266 @@ export class MeetupService {
   constructor(private readonly prismaService: DatabaseService) {}
 
   async create(createMeetupDto: CreateMeetupDto, userId: string) {
-    const {topic, description, tags, eventDateTime, address} = createMeetupDto;
+    const { topic, description, tags, eventDateTime, address } =
+      createMeetupDto;
 
-    let user = await this.prismaService.user.findUnique({where:{id: userId}});
+    const user = await this.prismaService.user.findUnique({
+      where: { id: userId },
+    });
 
-    if(!user) throw new ForbiddenException("User not found");
+    if (!user) throw new ForbiddenException('User not found');
 
     return this.prismaService.meetup.create({
-      data:{
+      data: {
         topic,
         description,
         eventDateTime,
         address,
         tags: {
-          connectOrCreate: tags.map(tagName => {
+          connectOrCreate: tags.map((tagName) => {
             return {
-              where:{
-                name: tagName
+              where: {
+                name: tagName,
               },
-              create:{
-                name: tagName
-              }
-            }
-          })
+              create: {
+                name: tagName,
+              },
+            };
+          }),
         },
-        organizer:{
-          connect:{
-            id: user.id
-          }
-        }
-      }, 
-      include:{
-        tags: true
-      }
+        organizer: {
+          connect: {
+            id: user.id,
+          },
+        },
+      },
+      include: {
+        tags: true,
+      },
     });
   }
 
   async findAll(pageOptionsDto: PageOptionsDto) {
-
-    let meetupsCount = (await this.prismaService.meetup.findMany({
-      where:{
-        topic:{
-          contains: pageOptionsDto.searchByTopic
+    const meetupsCount = (
+      await this.prismaService.meetup.findMany({
+        where: {
+          topic: {
+            contains: pageOptionsDto.searchByTopic,
+          },
+          AND: pageOptionsDto.searchByTags.map((tag) => ({
+            tags: {
+              some: {
+                name: tag,
+              },
+            },
+          })),
         },
-        AND: pageOptionsDto.searchByTags.map(tag => ({
-          tags:{
-            some:{
-              name: tag
-            }
-          }
-        })),
-      }
-    })).length;
+      })
+    ).length;
 
-    let paginatedMeetups = await this.prismaService.meetup.findMany({
-      where:{
-        topic:{
-          contains: pageOptionsDto.searchByTopic
+    const paginatedMeetups = await this.prismaService.meetup.findMany({
+      where: {
+        topic: {
+          contains: pageOptionsDto.searchByTopic,
         },
-        AND: pageOptionsDto.searchByTags.map(tag => ({
-          tags:{
-            some:{
-              name: tag
-            }
-          }
+        AND: pageOptionsDto.searchByTags.map((tag) => ({
+          tags: {
+            some: {
+              name: tag,
+            },
+          },
         })),
       },
-      orderBy:{
+      orderBy: {
         topic: pageOptionsDto.order,
       },
       skip: pageOptionsDto.skip,
       take: pageOptionsDto.take,
-      include:{
+      include: {
         tags: true,
-        subscribers:{
-          select:{
-            email: true
-          }
-        }
-      }
+        subscribers: {
+          select: {
+            email: true,
+          },
+        },
+      },
     });
-    
+
     const itemCount = meetupsCount;
 
     const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto });
-    
+
     return new PageDto(paginatedMeetups, pageMetaDto);
   }
 
   async findOne(id: string) {
-    let meetup = await this.prismaService.meetup.findUnique({
-      where:{id}, 
-      include:{
-        tags: true, 
-        subscribers:{
-          select:{
-            email: true
-          }
-        }
-      }
+    const meetup = await this.prismaService.meetup.findUnique({
+      where: { id },
+      include: {
+        tags: true,
+        subscribers: {
+          select: {
+            email: true,
+          },
+        },
+      },
     });
 
-    if(!meetup) throw new BadRequestException("Meetup not found");
+    if (!meetup) throw new BadRequestException('Meetup not found');
 
     return meetup;
   }
 
   async update(id: string, userId: string, updateMeetupDto: UpdateMeetupDto) {
-    const {topic, description, tags, eventDateTime, address} = updateMeetupDto;
+    const { topic, description, tags, eventDateTime, address } =
+      updateMeetupDto;
 
-    let user = await this.prismaService.user.findUnique({where:{id: userId}});
+    const user = await this.prismaService.user.findUnique({
+      where: { id: userId },
+    });
 
-    if(!user) throw new ForbiddenException("User not found");
+    if (!user) throw new ForbiddenException('User not found');
 
-    let meetup = await this.prismaService.meetup.findUnique({where:{id}});
+    const meetup = await this.prismaService.meetup.findUnique({
+      where: { id },
+    });
 
-    if(!meetup) throw new BadRequestException("Meetup not found");
+    if (!meetup) throw new BadRequestException('Meetup not found');
 
-    if(meetup.organizerId != user.id) throw new ForbiddenException("Access denied");
+    if (meetup.organizerId != user.id)
+      throw new ForbiddenException('Access denied');
 
     return this.prismaService.meetup.update({
-      where: {id}, 
-      data:{
+      where: { id },
+      data: {
         topic,
         description,
         tags: {
           set: [],
-          connectOrCreate: tags?.map(tagName => {
+          connectOrCreate: tags?.map((tagName) => {
             return {
-              where:{
-                name: tagName
+              where: {
+                name: tagName,
               },
-              create:{
-                name: tagName
-              }
-            }
-          })
+              create: {
+                name: tagName,
+              },
+            };
+          }),
         },
         eventDateTime,
-        address
-      }, 
-      include:{
+        address,
+      },
+      include: {
         tags: true,
-        subscribers:{
-          select:{
-            email: true
-          }
-        }
-      }
+        subscribers: {
+          select: {
+            email: true,
+          },
+        },
+      },
     });
   }
 
   async remove(id: string, userId: string) {
-    let user = await this.prismaService.user.findUnique({where:{id: userId}});
+    const user = await this.prismaService.user.findUnique({
+      where: { id: userId },
+    });
 
-    if(!user) throw new ForbiddenException("User not found");
+    if (!user) throw new ForbiddenException('User not found');
 
-    let meetup = await this.prismaService.meetup.findUnique({where:{ id: id}});
+    const meetup = await this.prismaService.meetup.findUnique({
+      where: { id: id },
+    });
 
-    if(!meetup) throw new BadRequestException("Meetup not found");
+    if (!meetup) throw new BadRequestException('Meetup not found');
 
-    if(meetup.organizerId != user.id) throw new ForbiddenException("Access denied");
+    if (meetup.organizerId != user.id)
+      throw new ForbiddenException('Access denied');
 
     return this.prismaService.meetup.delete({
-      where:{id}, 
-      include:{
-        tags: true, 
-        subscribers:{
-          select:{
-            email: true
-          }
-        }
-      }
-    });
-  }
-
-  async registerUser(id: string, userId: string){
-    let user = await this.prismaService.user.findUnique({where:{id: userId}, include: {subscribedMeetups: {where:{id}}}});
-
-    if(!user) throw new ForbiddenException("User not found");
-
-    if(user.subscribedMeetups.length != 0) throw new BadRequestException("You are already registered for the meetup");
-
-    let meetup = await this.prismaService.meetup.findUnique({where:{id}});
-
-    if(!meetup) throw new BadRequestException("Meetup not found");
-
-    if(meetup.organizerId == userId) throw new BadRequestException("Owner cannot register for the meetup");
-
-    return this.prismaService.meetup.update({
-      where: {id}, 
-      data:{
-        subscribers:{
-          connect:{
-            id: userId
-          }
-        }
-      }, 
-      include:{
+      where: { id },
+      include: {
         tags: true,
         subscribers: {
-          select:{
-            email: true
-          }
-        }
-      }
+          select: {
+            email: true,
+          },
+        },
+      },
     });
   }
 
-  async unregisterUser(id: string, userId: string){
-    let user = await this.prismaService.user.findUnique({where:{id: userId}, include: {subscribedMeetups: {where:{id: id}}}});
+  async registerUser(id: string, userId: string) {
+    const user = await this.prismaService.user.findUnique({
+      where: { id: userId },
+      include: { subscribedMeetups: { where: { id } } },
+    });
 
-    if(!user) throw new ForbiddenException("User not found");
+    if (!user) throw new ForbiddenException('User not found');
 
-    if(user.subscribedMeetups.length == 0) throw new BadRequestException("You are not registered for this meetup");
+    if (user.subscribedMeetups.length != 0)
+      throw new BadRequestException(
+        'You are already registered for the meetup',
+      );
+
+    const meetup = await this.prismaService.meetup.findUnique({
+      where: { id },
+    });
+
+    if (!meetup) throw new BadRequestException('Meetup not found');
+
+    if (meetup.organizerId == userId)
+      throw new BadRequestException('Owner cannot register for the meetup');
 
     return this.prismaService.meetup.update({
-      where:{id}, 
-      data:{
-        subscribers:{
-          disconnect:{
-            id: userId
-          }
-        }
-      }, 
-      include:{
-        tags: true, 
-        subscribers:{
-          select:{
-            email: true
-          }
-        }
-      }
+      where: { id },
+      data: {
+        subscribers: {
+          connect: {
+            id: userId,
+          },
+        },
+      },
+      include: {
+        tags: true,
+        subscribers: {
+          select: {
+            email: true,
+          },
+        },
+      },
+    });
+  }
+
+  async unregisterUser(id: string, userId: string) {
+    const user = await this.prismaService.user.findUnique({
+      where: { id: userId },
+      include: { subscribedMeetups: { where: { id: id } } },
+    });
+
+    if (!user) throw new ForbiddenException('User not found');
+
+    if (user.subscribedMeetups.length == 0)
+      throw new BadRequestException('You are not registered for this meetup');
+
+    return this.prismaService.meetup.update({
+      where: { id },
+      data: {
+        subscribers: {
+          disconnect: {
+            id: userId,
+          },
+        },
+      },
+      include: {
+        tags: true,
+        subscribers: {
+          select: {
+            email: true,
+          },
+        },
+      },
     });
   }
 }

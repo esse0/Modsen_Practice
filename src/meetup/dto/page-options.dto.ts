@@ -1,8 +1,16 @@
-import { ApiPropertyOptional } from "@nestjs/swagger";
-import { Type } from "class-transformer";
-import { IsArray, IsEnum, IsInt, IsOptional, IsString, Max, MaxLength, Min } from "class-validator";
-import { Order } from "../constants/Order.enum";
-
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import {
+  IsArray,
+  IsEnum,
+  IsInt,
+  IsOptional,
+  IsString,
+  Max,
+  MaxLength,
+  Min,
+} from 'class-validator';
+import { Order } from '../constants/Order.enum';
 
 export class PageOptionsDto {
   @ApiPropertyOptional({ enum: Order, default: Order.ASC })
@@ -33,7 +41,7 @@ export class PageOptionsDto {
   readonly take?: number = 10;
 
   @ApiPropertyOptional({
-    default: undefined
+    default: undefined,
   })
   @Type(() => String)
   @IsString()
@@ -44,9 +52,9 @@ export class PageOptionsDto {
   @ApiPropertyOptional({
     default: [],
   })
-  @Type(() => Array<String>)
+  @Type(() => Array<string>)
   @IsArray()
-  @IsString({each: true})
+  @IsString({ each: true })
   @IsOptional()
   readonly searchByTags?: string[] = [];
 
