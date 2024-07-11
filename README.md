@@ -1,9 +1,10 @@
 # Meetup api
+
+> # Before launching the application, fill out the env files
+
 ## Description
 
 My practice project with Nest Js, postgreSQL, Prisma ORM.
-
-> # Before launching the application, fill out the env files
 
 ## Installation
 
