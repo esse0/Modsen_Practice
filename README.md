@@ -4,7 +4,7 @@
 
 ## Description
 
-My practice project with Nest Js, postgreSQL, Prisma ORM.
+My practice project with Nest Js, postgreSQL, Prisma ORM, Swagger.
 
 ## Installation
 
@@ -35,3 +35,4 @@ $ npm run docker:start
 ## Deployed on render
 
 Uri: https://modsen-practice-l6ax.onrender.com
+Swagger: https://modsen-practice-l6ax.onrender.com/swagger
