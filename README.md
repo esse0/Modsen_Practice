@@ -11,7 +11,9 @@
 
 ## Description
 
-My practice project with Nest Js, postgreSQL.
+My practice project with Nest Js, postgreSQL, Prisma ORM.
+
+> # Before launching the application, fill out the env files
 
 ## Installation
 
@@ -27,20 +29,18 @@ $ npm run start
 
 # watch mode
 $ npm run start:dev
-
-# production mode
-$ npm run start:prod
 ```
 
-## Test
+## Docker deploying
 
 ```bash
-# unit tests
-$ npm run test
+# build image
+$ npm run docker:build
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+# start/create container
+$ npm run docker:start
 ```
+
+## Deployed on render
+
+Uri: https://modsen-practice-l6ax.onrender.com
