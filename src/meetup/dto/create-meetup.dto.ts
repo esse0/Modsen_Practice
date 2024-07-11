@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from "@nestjs/swagger";
 import {
   IsNotEmpty,
   IsString,
@@ -6,7 +6,7 @@ import {
   ArrayMinSize,
   IsDateString,
   NotContains,
-} from 'class-validator';
+} from "class-validator";
 
 export class CreateMeetupDto {
   @ApiProperty()
@@ -23,7 +23,7 @@ export class CreateMeetupDto {
   @IsNotEmpty()
   @IsArray()
   @IsString({ each: true })
-  @NotContains(' ', { each: true })
+  @NotContains(" ", { each: true })
   @ArrayMinSize(0)
   readonly tags: string[];
 

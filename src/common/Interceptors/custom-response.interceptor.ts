@@ -4,9 +4,9 @@ import {
   ExecutionContext,
   CallHandler,
   HttpException,
-} from '@nestjs/common';
-import { Observable, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+} from "@nestjs/common";
+import { Observable, throwError } from "rxjs";
+import { catchError, map } from "rxjs/operators";
 
 @Injectable()
 export class CustomResponseInterceptor implements NestInterceptor {
@@ -18,7 +18,7 @@ export class CustomResponseInterceptor implements NestInterceptor {
     return next.handle().pipe(
       map((data) => ({
         statusCode,
-        message: statusCode >= 400 ? 'Error' : 'Success',
+        message: statusCode >= 400 ? "Error" : "Success",
         error: statusCode >= 400 ? response.message : null,
         path: request.url,
         data,
@@ -28,8 +28,8 @@ export class CustomResponseInterceptor implements NestInterceptor {
         const errorResponse = {
           statusCode,
           message:
-            err?.response?.message || err?.message || 'Internal server error',
-          error: err.name || 'Error',
+            err?.response?.message || err?.message || "Internal server error",
+          error: err.name || "Error",
           path: request.url,
           data: {},
         };

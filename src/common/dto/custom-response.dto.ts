@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from "@nestjs/swagger";
 
 export class CustomResponseDto {
   @ApiProperty()
@@ -10,7 +10,7 @@ export class CustomResponseDto {
   @ApiProperty()
   error: string | null;
 
-  @ApiProperty({ example: '/api/example' })
+  @ApiProperty({ example: "/api/example" })
   path: string;
 
   @ApiProperty()

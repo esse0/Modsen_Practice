@@ -1,5 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { Tag } from '@prisma/client';
+import { ApiProperty } from "@nestjs/swagger";
+import { Tag } from "@prisma/client";
 
 export class MeetupDto {
   @ApiProperty()

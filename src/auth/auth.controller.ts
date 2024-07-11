@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Request, Response } from "express";
 import {
   Controller,
   Post,
@@ -7,7 +7,7 @@ import {
   UseGuards,
   Req,
   Res,
-} from '@nestjs/common';
+} from "@nestjs/common";
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
@@ -17,30 +17,30 @@ import {
   ApiSecurity,
   ApiTags,
   ApiUnauthorizedResponse,
-} from '@nestjs/swagger';
-import { AuthService } from './auth.service';
-import { GetCurrentUser } from 'src/common/decorators';
-import { RtGuard } from 'src/common/guards';
-import { SignInAuthDto } from './dto/signin-auth.dto';
-import { SignUpAuthDto } from './dto/signup-auth.dto';
-import { CustomResponseDto } from 'src/common/dto/custom-response.dto';
+} from "@nestjs/swagger";
+import { AuthService } from "./auth.service";
+import { GetCurrentUser } from "src/common/decorators";
+import { RtGuard } from "src/common/guards";
+import { SignInAuthDto } from "./dto/signin-auth.dto";
+import { SignUpAuthDto } from "./dto/signup-auth.dto";
+import { CustomResponseDto } from "src/common/dto/custom-response.dto";
 
-@ApiTags('auth')
-@Controller('auth')
+@ApiTags("auth")
+@Controller("auth")
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @ApiResponse({
     status: 200,
-    description: 'Successful response',
+    description: "Successful response",
     headers: {
-      'Set-Cookie': {
-        description: 'Set-Cookie header for access and refresh tokens',
+      "Set-Cookie": {
+        description: "Set-Cookie header for access and refresh tokens",
         schema: {
-          type: 'string',
+          type: "string",
           example: [
-            'accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9; Path=/; SameSite=Strict',
-            'refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9; Path=/; HttpOnly; SameSite=Strict',
+            "accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9; Path=/; SameSite=Strict",
+            "refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9; Path=/; HttpOnly; SameSite=Strict",
           ],
         },
       },
@@ -48,19 +48,19 @@ export class AuthController {
     type: CustomResponseDto,
   })
   @ApiForbiddenResponse({
-    description: 'Access denied',
+    description: "Access denied",
     type: CustomResponseDto,
   })
   @ApiBadRequestResponse({
-    description: 'Bad request',
+    description: "Bad request",
     type: CustomResponseDto,
   })
   @ApiInternalServerErrorResponse({
-    description: 'Internal server error',
+    description: "Internal server error",
     type: CustomResponseDto,
   })
   @HttpCode(200)
-  @Post('signin')
+  @Post("signin")
   async signIn(
     @Body() signInDto: SignInAuthDto,
     @Res({ passthrough: true }) response: Response,
@@ -68,45 +68,45 @@ export class AuthController {
     const { access_token, refresh_token } =
       await this.authService.signIn(signInDto);
 
-    response.cookie('accessToken', access_token, {
-      sameSite: 'strict',
+    response.cookie("accessToken", access_token, {
+      sameSite: "strict",
     });
 
-    response.cookie('refreshToken', refresh_token, {
+    response.cookie("refreshToken", refresh_token, {
       httpOnly: true,
-      sameSite: 'strict',
+      sameSite: "strict",
     });
   }
 
   @ApiCreatedResponse({
-    description: 'Successful response',
+    description: "Successful response",
     type: CustomResponseDto,
   })
   @ApiBadRequestResponse({
-    description: 'Bad request',
+    description: "Bad request",
     type: CustomResponseDto,
   })
   @ApiInternalServerErrorResponse({
-    description: 'Internal server error',
+    description: "Internal server error",
     type: CustomResponseDto,
   })
   @HttpCode(201)
-  @Post('signup')
+  @Post("signup")
   async signUp(@Body() signUpDto: SignUpAuthDto) {
     return this.authService.signUp(signUpDto);
   }
 
   @ApiResponse({
     status: 200,
-    description: 'Successful response',
+    description: "Successful response",
     headers: {
-      'Set-Cookie': {
-        description: 'Set-Cookie header for access and refresh tokens',
+      "Set-Cookie": {
+        description: "Set-Cookie header for access and refresh tokens",
         schema: {
-          type: 'string',
+          type: "string",
           example: [
-            'accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9; Path=/; SameSite=Strict',
-            'refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9; Path=/; HttpOnly; SameSite=Strict',
+            "accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9; Path=/; SameSite=Strict",
+            "refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9; Path=/; HttpOnly; SameSite=Strict",
           ],
         },
       },
@@ -114,39 +114,39 @@ export class AuthController {
     type: CustomResponseDto,
   })
   @ApiForbiddenResponse({
-    description: 'Access denied',
+    description: "Access denied",
     type: CustomResponseDto,
   })
   @ApiInternalServerErrorResponse({
-    description: 'Internal server error',
+    description: "Internal server error",
     type: CustomResponseDto,
   })
   @ApiUnauthorizedResponse({
-    description: 'Unathorized',
+    description: "Unathorized",
     type: CustomResponseDto,
   })
-  @ApiSecurity('refresh-token')
+  @ApiSecurity("refresh-token")
   @UseGuards(RtGuard)
   @HttpCode(200)
-  @Post('refresh')
+  @Post("refresh")
   async refreshTokens(
-    @GetCurrentUser('id') userId: string,
+    @GetCurrentUser("id") userId: string,
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
   ) {
     const { access_token, refresh_token } =
       await this.authService.refreshTokens(
         userId,
-        request.cookies['refreshToken'],
+        request.cookies["refreshToken"],
       );
 
-    response.cookie('accessToken', access_token, {
-      sameSite: 'strict',
+    response.cookie("accessToken", access_token, {
+      sameSite: "strict",
     });
 
-    response.cookie('refreshToken', refresh_token, {
+    response.cookie("refreshToken", refresh_token, {
       httpOnly: true,
-      sameSite: 'strict',
+      sameSite: "strict",
     });
   }
 }

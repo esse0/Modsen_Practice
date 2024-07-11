@@ -2,15 +2,15 @@ import {
   BadRequestException,
   ForbiddenException,
   Injectable,
-} from '@nestjs/common';
-import { SignInAuthDto } from './dto/signin-auth.dto';
-import { SignUpAuthDto } from './dto/signup-auth.dto';
-import { DatabaseService } from 'src/database/database.service';
-import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcrypt';
-import { Role } from '@prisma/client';
-import { Tokens } from './types';
+} from "@nestjs/common";
+import { SignInAuthDto } from "./dto/signin-auth.dto";
+import { SignUpAuthDto } from "./dto/signup-auth.dto";
+import { DatabaseService } from "src/database/database.service";
+import { ConfigService } from "@nestjs/config";
+import { JwtService } from "@nestjs/jwt";
+import * as bcrypt from "bcrypt";
+import { Role } from "@prisma/client";
+import { Tokens } from "./types";
 
 @Injectable()
 export class AuthService {
@@ -30,13 +30,13 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new ForbiddenException('Access denied');
+      throw new ForbiddenException("Access denied");
     }
 
     const passwordMatches = await bcrypt.compare(password, user.hashedPassword);
 
     if (!passwordMatches) {
-      throw new ForbiddenException('Access denied');
+      throw new ForbiddenException("Access denied");
     }
 
     const tokens = await this.getTokens(user.id, user.role);
@@ -55,7 +55,7 @@ export class AuthService {
       },
     });
 
-    if (user) throw new BadRequestException('Email already exists');
+    if (user) throw new BadRequestException("Email already exists");
 
     const hashedPassword = await this.getHash(password);
 
@@ -79,11 +79,11 @@ export class AuthService {
     });
 
     if (!user || user.refreshToken == null)
-      throw new ForbiddenException('Access denied');
+      throw new ForbiddenException("Access denied");
 
     const rtMatches = refreshToken === user.refreshToken;
 
-    if (!rtMatches) throw new ForbiddenException('Access denied');
+    if (!rtMatches) throw new ForbiddenException("Access denied");
 
     const tokens = await this.getTokens(user.id, user.role);
 
@@ -111,7 +111,7 @@ export class AuthService {
           role,
         },
         {
-          secret: this.configService.get('ACCESS_TOKEN_SECRET'),
+          secret: this.configService.get("ACCESS_TOKEN_SECRET"),
           expiresIn: 60 * 15,
         },
       ),
@@ -121,7 +121,7 @@ export class AuthService {
           role,
         },
         {
-          secret: this.configService.get('REFRESH_TOKEN_SECRET'),
+          secret: this.configService.get("REFRESH_TOKEN_SECRET"),
           expiresIn: 60 * 60 * 24 * 7,
         },
       ),
@@ -134,7 +134,7 @@ export class AuthService {
   }
 
   async getHash(data: string) {
-    const saltOrRounds = this.configService.get('SaltOrRounds');
+    const saltOrRounds = this.configService.get("SaltOrRounds");
 
     const hashedData = await bcrypt.hash(data, +saltOrRounds);
 

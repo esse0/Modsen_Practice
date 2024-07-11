@@ -1,4 +1,4 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiPropertyOptional } from "@nestjs/swagger";
 import {
   ArrayMinSize,
   IsArray,
@@ -7,7 +7,7 @@ import {
   IsOptional,
   IsString,
   NotContains,
-} from 'class-validator';
+} from "class-validator";
 
 export class UpdateMeetupDto {
   @ApiPropertyOptional()
@@ -27,7 +27,7 @@ export class UpdateMeetupDto {
   @IsNotEmpty()
   @IsArray()
   @IsString({ each: true })
-  @NotContains(' ', { each: true })
+  @NotContains(" ", { each: true })
   @ArrayMinSize(0)
   @IsOptional()
   readonly tags?: string[] = undefined;
