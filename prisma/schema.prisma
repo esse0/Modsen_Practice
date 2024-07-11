@@ -34,7 +34,7 @@ model Meetup {
   organizer User @relation(fields: [organizerId], references: [id], onDelete: Cascade)
 }
 
-model Tag{
+model Tag {
   id String @default(uuid()) @id
   name String @unique
   meetups Meetup[]

@@ -6,7 +6,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { CustomResponseInterceptor } from './common/Interceptors/custom-response.interceptor';
 
 async function bootstrap() {
-  const PORT = process.env.PORT || 3000;
+  const PORT = process.env.SERVER_PORT || 3000;
 
   const app = await NestFactory.create(AppModule);
 

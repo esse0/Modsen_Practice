@@ -1,0 +1,14 @@
+/dist
+/build
+/coverage
+
+node_modules
+
+.git
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+.env.production
+.env.development
